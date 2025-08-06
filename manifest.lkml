@@ -1,8 +1,12 @@
 project_name: "import_for_custom_viz"
 
-# # Use local_dependency: To enable referencing of another project
-# # on this instance with include: statements
-#
-# local_dependency: {
-#   project: "name_of_other_project"
-# }
+visualization: {
+  id: "custom_viz_spider"
+  label: "whatever"
+  file: "custom_viz_spider.js"
+
+
+dependencies:[
+  "https://d3js.org/d3.vz.min.js",
+  "hhtps://code.highcharts.com/highcharts.js"
+]}
