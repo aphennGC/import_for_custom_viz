@@ -1,5 +1,5 @@
 looker.plugins.visualizations.add({
-  // Configuration Options
+  //Configuration Options
   options: {
     // Style Tab
     style_tab: {
@@ -8,7 +8,7 @@ looker.plugins.visualizations.add({
       default: true,
       elements: [], // This will be dynamically populated
     },
-    // Legend Tab
+    //Legend Tab
     legend_tab: {
       type: "section",
       label: "Legend",
@@ -351,4 +351,5 @@ looker.plugins.visualizations.add({
     }
 
     done();
-  });
+  }
+});
