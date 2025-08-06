@@ -351,5 +351,4 @@ looker.plugins.visualizations.add({
     }
 
     done();
-  }
-});
+  });
