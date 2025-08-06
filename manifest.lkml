@@ -7,6 +7,6 @@ visualization: {
 
 
 dependencies:[
-  "https://d3js.org/d3.vz.min.js",
+  "https://d3js.org/d3.v6.min.js",
   "hhtps://code.highcharts.com/highcharts.js"
 ]}
