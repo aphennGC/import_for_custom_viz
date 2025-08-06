@@ -1,5 +1,5 @@
 looker.plugins.visualizations.add({
-  //Configuration Options
+  // Configuration Options
   options: {
     // Style Tab
     style_tab: {
@@ -8,7 +8,7 @@ looker.plugins.visualizations.add({
       default: true,
       elements: [], // This will be dynamically populated
     },
-    //Legend Tab
+    // Legend Tab
     legend_tab: {
       type: "section",
       label: "Legend",
@@ -88,23 +88,23 @@ looker.plugins.visualizations.add({
     const measureFields = queryResponse.fields.measure_like;
     const dimensionField = queryResponse.fields.dimension_like[0];
 
-    // Clear existing style elements to prevent duplication on update
-    config.style_tab.elements = [];
-
+    // Correcting the dynamic population of options
+    // We must modify the `options` object directly, not the `config` object
+    const newStyleElements = [];
     const defaultColors = [
       "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
       "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"
     ];
 
     measureFields.forEach((measure, i) => {
-      config.style_tab.elements.push({
+      newStyleElements.push({
         type: "text",
         label: `${measure.label_short || measure.label} Label`,
         id: `measure_label_${measure.name}`,
         default: measure.label_short || measure.label,
         placeholder: measure.label_short || measure.label,
       });
-      config.style_tab.elements.push({
+      newStyleElements.push({
         type: "color",
         label: `${measure.label_short || measure.label} Color`,
         id: `measure_color_${measure.name}`,
@@ -112,8 +112,11 @@ looker.plugins.visualizations.add({
       });
     });
 
+    // Update the options dynamically for the style tab
+    this.options.style_tab.elements = newStyleElements;
+
     // Re-render options in Looker UI
-    this.trigger("updateConfig", config);
+    this.trigger("updateConfig", this.options);
 
     // Get dimensions of the container
     const width = element.offsetWidth;
@@ -233,14 +236,14 @@ looker.plugins.visualizations.add({
         enter => enter.append("path")
         .attr("class", "radar-polygon")
         .attr("d", d => radarLine(d.axes))
-        .style("fill", (d, i) => config[`measure_color_${measureNames[i]}`] || defaultColors[i % defaultColors.length]) // Use first measure's color for simplicity
+        .style("fill", (d, i) => config[`measure_color_${d.axes[0].originalMeasureName}`] || defaultColors[i % defaultColors.length]) 
         .style("fill-opacity", 0.4)
         .style("stroke-width", 2)
-        .style("stroke", (d, i) => config[`measure_color_${measureNames[i]}`] || defaultColors[i % defaultColors.length]),
+        .style("stroke", (d, i) => config[`measure_color_${d.axes[0].originalMeasureName}`] || defaultColors[i % defaultColors.length]),
         update => update
         .attr("d", d => radarLine(d.axes))
-        .style("fill", (d, i) => config[`measure_color_${measureNames[i]}`] || defaultColors[i % defaultColors.length])
-        .style("stroke", (d, i) => config[`measure_color_${measureNames[i]}`] || defaultColors[i % defaultColors.length]),
+        .style("fill", (d, i) => config[`measure_color_${d.axes[0].originalMeasureName}`] || defaultColors[i % defaultColors.length])
+        .style("stroke", (d, i) => config[`measure_color_${d.axes[0].originalMeasureName}`] || defaultColors[i % defaultColors.length]),
         exit => exit.remove()
       );
 
@@ -307,7 +310,7 @@ looker.plugins.visualizations.add({
             item.append("rect")
               .attr("width", legendRectSize)
               .attr("height", legendRectSize)
-              .style("fill", (d, i) => config[`measure_color_${measureNames[i]}`] || defaultColors[i % defaultColors.length])
+              .style("fill", (d, i) => config[`measure_color_${d.axes[0].originalMeasureName}`] || defaultColors[i % defaultColors.length])
               .style("stroke", "black")
               .style("stroke-width", 1);
             item.append("text")
@@ -321,7 +324,7 @@ looker.plugins.visualizations.add({
           },
           update => {
             update.select("rect")
-              .style("fill", (d, i) => config[`measure_color_${measureNames[i]}`] || defaultColors[i % defaultColors.length]);
+              .style("fill", (d, i) => config[`measure_color_${d.axes[0].originalMeasureName}`] || defaultColors[i % defaultColors.length]);
             update.select("text")
               .text(d => d.name);
             return update;
